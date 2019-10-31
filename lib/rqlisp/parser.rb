@@ -1,4 +1,5 @@
 require "parslet"
+require "pry-byebug"
 
 module Rqlisp
   class Parser
@@ -13,14 +14,14 @@ module Rqlisp
         str('"') >> (
           (str('\\') >> any) |
           (str('"').absent? >> any)
-        ).repeat.as(:string) >>
+        ).repeat(0).as(:string) >>
         str('"') >> space?
       }
-      rule(:list)        { str('(') >> space? >> expression.repeat(0).as(:list) >> str(')') >> space? }
-      rule(:variable)    { match('[a-zA-Z0-9*-+]').repeat(1).as(:variable) >> space? }
+      rule(:list)        { str('(') >> space? >> expressions.as(:list) >> str(')') >> space? }
+      rule(:variable)    { match('[a-zA-Z0-9*+-]').repeat(1).as(:variable) >> space? }
       rule(:quote)       { str("'") >> expression.as(:quote) >> space? }
       rule(:expression)  { list | string | integer | comment | variable | quote }
-      rule(:expressions) { expression.repeat(1) }
+      rule(:expressions) { expression.repeat(0) }
       root :expressions
     end
 
@@ -29,27 +30,40 @@ module Rqlisp
     end
 
     def parse(source)
-      raw_expressions = @rules.parse(source)
-      expressions = raw_expressions.map { |expr| convert_expr_to_rqlisp_data(expr) }.compact
-      Rqlisp::List.from_array(*expressions)
+      expressions = @rules.parse(source)
+      recursively_convert_list(expressions)
     end
 
     private
 
     def convert_expr_to_rqlisp_data(parse_tree)
-      # require 'pry-byebug'; binding.pry
       type, value = parse_tree.to_a[0]
       case type
-      # FIXME: This is a quick hack to fix the escaped double quote parsing. Should fix the rule instead.
-      when :string then Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
-      when :integer then Rqlisp::Integer.new(value.to_int)
+      when :comment  then nil
+      when :integer  then Rqlisp::Integer.new(value.to_int)
       when :variable then Rqlisp::Variable.new(value.to_s)
-      when :list then Rqlisp::List.from_array(*value.map { |node| convert_expr_to_rqlisp_data(node) }.compact)
-      when :quote then # FIXME
-      when :comment then nil
+      when :list     then recursively_convert_list(value)
+      when :string
+        if value == []
+          Rqlisp::String.new("")
+        else
+          # FIXME: This is a quick hack to fix the escaped double quote parsing. Should fix the rule instead.
+          Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
+        end
+      when :quote
+        Rqlisp::List.from_array(Rqlisp::Variable.new(:quote), convert_expr_to_rqlisp_data(value))
       else
-        require 'pry-byebug'; binding.pry
-        puts "wtf"
+        binding.pry
+        raise "wtf"
+      end
+    end
+
+    def recursively_convert_list(expressions)
+      if expressions.nil? || expressions == ""
+        Rqlisp::List::EMPTY
+      else
+        rqlisp_expressions = expressions.map { |node| convert_expr_to_rqlisp_data(node) }.compact
+        Rqlisp::List.from_array(*rqlisp_expressions)
       end
     end
   end

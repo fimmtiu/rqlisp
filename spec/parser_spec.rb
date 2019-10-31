@@ -10,6 +10,7 @@ RSpec.describe Rqlisp::Parser do
       ['0000', int(0)],
     ],
     "string" => [
+      ['""', str("")],
       ['"woo"', str("woo")],
       ['"w\\oo"', str("w\\oo")],
       ['"w\\"oo"', str("w\"oo")],
@@ -27,11 +28,21 @@ RSpec.describe Rqlisp::Parser do
       ["; i like pie\n(1 2)", list(int(1), int(2))],
     ],
     "multiple things" => [
+      ["", nil],
       ["1 2 3", [int(1), int(2), int(3)]],
     ],
     "variable" => [
       ['honk', var("honk")],
       ['honk', var(:honk)],
+      ['pie-hole', var("pie-hole")],
+      ['pie hole', [var("pie"), var("hole")]],
+      ['(pie hole)', list(var("pie"), var("hole"))],
+    ],
+    "quote" => [
+      ["'()", list(var(:quote), list())],
+      ["'1", list(var(:quote), int(1))],
+      ["'(1)", list(var(:quote), list(int(1)))],
+      ["'(1 2)", list(var(:quote), list(int(1), int(2)))],
     ],
   }
 

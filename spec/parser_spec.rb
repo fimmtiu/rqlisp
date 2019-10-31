@@ -18,6 +18,11 @@ RSpec.describe Rqlisp::Parser do
       ['()', list()],
       ['(1 2)', list(int(1), int(2))],
     ],
+    "comments" => [
+      ['"woo" ;; woo woo', str("woo")],
+      [';(1 2)', nil],
+      ['; i like pie\n(1 2)', list(int(1), int(2))],
+    ],
   }
 
   TEST_CASES.each do |category, subtests|

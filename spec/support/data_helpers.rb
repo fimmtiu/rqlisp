@@ -14,4 +14,8 @@ module DataHelpers
   def list(*items)
     Rqlisp::List.from_array(*items)
   end
+
+  def var(ruby_str)
+    Rqlisp::Variable.new(ruby_str)
+  end
 end

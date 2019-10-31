@@ -20,18 +20,25 @@ RSpec.describe Rqlisp::Parser do
       ["(1\n2)", list(int(1), int(2))],
       ['("one" "two" "three")', list(str("one"), str("two"), str("three"))],
     ],
-    "comments" => [
+    "comment" => [
       ['"woo" ; "hoo"', str("woo")],
       ['"woo" ;; "hoo"', str("woo")],
       [';(1 2)', nil],
       ["; i like pie\n(1 2)", list(int(1), int(2))],
+    ],
+    "multiple things" => [
+      ["1 2 3", [int(1), int(2), int(3)]],
+    ],
+    "variable" => [
+      ['honk', var("honk")],
+      ['honk', var(:honk)],
     ],
   }
 
   TEST_CASES.each do |category, subtests|
     describe category do
       subtests.each_with_index do |(source, expected), i|
-        wrapped_expected = expected.nil? ? list() : list(expected)
+        wrapped_expected = expected.nil? ? list() : list(*expected)
         it "test #{i + 1} succeeds" do
           actual = Rqlisp::Parser.new.parse(source)
           expect(actual).to eq wrapped_expected

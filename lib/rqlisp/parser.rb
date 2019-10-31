@@ -14,7 +14,7 @@ module Rqlisp
         ).repeat.as(:string) >>
         str('"') >> space?
       }
-      rule(:list)       { str('(') >> space? >> expression.repeat(1) >> str(')') >> space? }
+      rule(:list)       { str('(') >> space? >> expression.repeat(0).as(:list) >> str(')') >> space? }
       # 'foo => (quote foo)
       # EOL comments - https://github.com/kschiess/parslet/blob/master/example/string_parser.rb
       rule(:expression) { list | string | integer }
@@ -35,10 +35,12 @@ module Rqlisp
     private
 
     def convert_node_to_rqlisp_data(parse_tree)
+      # require 'pry-byebug'; binding.pry
       type, value = parse_tree.to_a[0]
       case type
       when :string then Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
       when :integer then Rqlisp::Integer.new(value.to_int)
+      when :list then Rqlisp::List.from_array(*value.map { |node| convert_node_to_rqlisp_data(node) })
       end
     end
   end

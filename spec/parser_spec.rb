@@ -14,6 +14,10 @@ RSpec.describe Rqlisp::Parser do
       ['"w\\oo"', str("w\\oo")],
       ['"w\\"oo"', str("w\"oo")],
     ],
+    "list" => [
+      ['()', list()],
+      ['(1 2)', list(int(1), int(2))],
+    ],
   }
 
   TEST_CASES.each do |category, subtests|
@@ -21,8 +25,6 @@ RSpec.describe Rqlisp::Parser do
       subtests.each_with_index do |(source, expected), i|
         it "test #{i + 1} succeeds" do
           actual = Rqlisp::Parser.new.parse(source)
-          puts "Actual: #{actual.value}"
-          puts "Expect: #{expected.value}"
           expect(actual).to eq expected
         end
       end

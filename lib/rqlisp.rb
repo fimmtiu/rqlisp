@@ -1,5 +1,6 @@
 require "rqlisp/data_type"
 require "rqlisp/integer"
+require "rqlisp/list"
 require "rqlisp/parser"
 require "rqlisp/runtime"
 require "rqlisp/string"

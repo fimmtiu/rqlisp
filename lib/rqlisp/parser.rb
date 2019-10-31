@@ -37,7 +37,7 @@ module Rqlisp
     def convert_node_to_rqlisp_data(parse_tree)
       type, value = parse_tree.to_a[0]
       case type
-      when :string then Rqlisp::String.new(value.to_str)
+      when :string then Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
       when :integer then Rqlisp::Integer.new(value.to_int)
       end
     end

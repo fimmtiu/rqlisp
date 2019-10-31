@@ -1,4 +1,6 @@
+require "rqlisp/data_helpers"
 require "rqlisp/data_type"
+require "rqlisp/function"
 require "rqlisp/integer"
 require "rqlisp/list"
 require "rqlisp/parser"
@@ -12,9 +14,5 @@ module Rqlisp
 
   def self.run(code)
     Rqlisp::Runtime.new.run(code)
-  end
-
-  def self.[](list)
-    FIXME
   end
 end

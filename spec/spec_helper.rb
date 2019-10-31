@@ -1,6 +1,5 @@
 require "bundler/setup"
 require "rqlisp"
-require "support/data_helpers"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -12,4 +11,8 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include DataHelpers
+
+
 end

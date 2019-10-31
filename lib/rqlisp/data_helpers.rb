@@ -18,4 +18,8 @@ module DataHelpers
   def var(ruby_str)
     Rqlisp::Variable.new(ruby_str)
   end
+
+  def fn(args, code)
+    Rqlisp::Function.new(args, code)
+  end
 end

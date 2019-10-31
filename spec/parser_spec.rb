@@ -51,7 +51,7 @@ RSpec.describe Rqlisp::Parser do
       subtests.each_with_index do |(source, expected), i|
         wrapped_expected = expected.nil? ? list() : list(*expected)
         it "test #{i + 1} succeeds" do
-          actual = Rqlisp::Parser.new.parse(source)
+          actual = described_class.new.parse(source)
           expect(actual).to eq wrapped_expected
         end
       end

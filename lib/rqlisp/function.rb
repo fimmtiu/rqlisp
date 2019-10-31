@@ -10,5 +10,9 @@ module Rqlisp
     def ==(other)
       other.is_a?(Function) && args == other.args && code == other.code
     end
+
+    def literal?
+      true
+    end
   end
 end

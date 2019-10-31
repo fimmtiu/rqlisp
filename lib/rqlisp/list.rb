@@ -27,7 +27,7 @@ module Rqlisp
     end
 
     def ==(other)
-      car == other.car && cdr == other.cdr
+      other.is_a?(List) && car == other.car && cdr == other.cdr
     end
   end
 end

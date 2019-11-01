@@ -1,6 +1,6 @@
 module Rqlisp
   class Env < DataType
-    attr_reader :vars
+    attr_reader :vars, :parent_env
 
     def initialize(parent:, vars: {})
       @parent_env = parent
@@ -11,7 +11,7 @@ module Rqlisp
       if env = find_env_containing_var(var)
         env.vars[var.value]
       else
-        raise "Unknown variable: #{var.value}!"
+        raise "Unknown variable: #{var.value}\nCurrent env: #{self}"
       end
     end
 
@@ -35,6 +35,14 @@ module Rqlisp
       else
         nil
       end
+    end
+
+    def to_s
+      repr = "(env"
+      repr += vars.map do |name, value|
+        " #{name} => #{value}"
+      end.join(",")
+      repr + ")"
     end
   end
 end

@@ -68,11 +68,11 @@ module Rqlisp
         cdr.car
       when var("if")
         # FIXME error handling
-        condition = eval(self[1], env)
+        condition = self[1].eval(env)
         if condition != FALSE && condition != NIL
-          eval(self[2], env)
-        elsif expr.length > 3
-          eval(self[3], env)
+          self[2].eval(env)
+        elsif length > 3
+          self[3].eval(env)
         else
           NIL
         end
@@ -84,7 +84,7 @@ module Rqlisp
         last_value
       else
         function = car.eval(env)
-        function.call(cdr.to_array)
+        function.call(cdr.to_array, env)
       end
     end
   end

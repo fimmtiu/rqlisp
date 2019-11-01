@@ -1,6 +1,6 @@
 module Rqlisp
   class Function < DataType
-    attr_reader :env, :args, :code
+    attr_reader :args, :code
 
     def initialize(env:, args:, code:)
       @env = env
@@ -25,27 +25,29 @@ module Rqlisp
       "(fn #{args} #{body})"
     end
 
-    def call(arguments, env)
-      apply(arguments.map { |arg| arg.eval(env) })
-    end
-
-    def apply(function, args)
-      env = env_with_funcall_args(function, args)
-      if function.code.is_a?(Method)
-        function.code.call(env)
-      else
-        eval(function.code, env)
-      end
+    def call(arguments, caller_env)
+      apply(arguments.map { |arg| arg.eval(caller_env) })
     end
 
     private
 
-    def env_with_funcall_args(function, args)
-      env = Rqlisp::Env.new(parent: function.env)
-      function.args.to_array.each_with_index do |arg_name, i|
-        env.define(arg_name, args[i])
+    def apply(arguments, env: @env)
+      local_env = env_with_funcall_args(arguments, env)
+      if code.is_a?(Method)
+        puts "method env: #{local_env}"
+        code.call(local_env)
+      else
+        puts "apply env: #{local_env}"
+        code.eval(local_env)
       end
-      env
+    end
+
+    def env_with_funcall_args(arg_values, env)
+      new_local_env = Rqlisp::Env.new(parent: env)
+      @args.to_array.each_with_index do |arg_name, i|
+        new_local_env.define(arg_name, arg_values[i])
+      end
+      new_local_env
     end
   end
 end

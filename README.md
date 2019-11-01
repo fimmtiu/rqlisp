@@ -41,9 +41,9 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todo
 
-* A couple of comparison operators (`eq`, `<`, `>`)
 * A macro system
 * `def`
+* Move specs out of Runtime into the individual data types' specs
 * Rip most of the crap out of DataType
 * Rest args
   * Add `list` builtin

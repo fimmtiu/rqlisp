@@ -45,4 +45,14 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run('(= "foo" "bar")')).to eq Rqlisp::FALSE
     end
   end
+
+  describe ".set" do
+    it "establishes a new variable in the current env if it doesn't exist" do
+      expect(Rqlisp::Runtime.new.run('(set a 1) a')).to eq int(1)
+    end
+
+    it "changes the value of an existing variable in the current env" do
+      expect(Rqlisp::Runtime.new.run('((fn (a) (set a 2) a) 1)')).to eq int(2)
+    end
+  end
 end

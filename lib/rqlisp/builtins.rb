@@ -10,10 +10,20 @@ module Rqlisp
       {name: :print, symbol: "print", args: list(var("expr"))},
     ]
 
+    BUILT_IN_MACROS = [
+      # {name: :def, symbol: "def", args: list(var("args"), var("code"))},
+      {name: :set, symbol: "set", args: list(var("variable"), var("value"))},
+    ]
+
     def self.add_to_environment(env)
       BUILT_IN_FUNCTIONS.each do |builtin|
-        function = Rqlisp::Function.new(env: builtin[:env], args: builtin[:args], code: method(builtin[:name]))
+        function = Rqlisp::Function.new(env: env, args: builtin[:args], code: method(builtin[:name]))
         env.define(var(builtin[:symbol]), function)
+      end
+
+      BUILT_IN_MACROS.each do |builtin|
+        macro = Rqlisp::Macro.new(env: env, args: builtin[:args], code: method(builtin[:name]))
+        env.define(var(builtin[:symbol]), macro)
       end
     end
 
@@ -45,6 +55,16 @@ module Rqlisp
       expr = env.lookup(var(:expr))
       puts expr.to_s
       NIL
+    end
+
+    def self.set(env)
+      variable = env.lookup(var(:variable))
+      value_expr = env.lookup(var(:value))
+      value = value_expr.eval(env)
+      env.parent_env.set(variable, value)
+      puts "set env: #{env}"
+      puts "set parent env: #{env.parent_env}"
+      value
     end
   end
 end

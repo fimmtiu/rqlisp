@@ -112,4 +112,12 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run("(list 1 2 3)")).to eq list(int(1), int(2), int(3))
     end
   end
+
+  describe ".append" do
+    it "returns a concatenated list of its argument lists" do
+      expect(Rqlisp::Runtime.new.run("(append)")).to eq Rqlisp::List::EMPTY
+      expect(Rqlisp::Runtime.new.run("(append '(1 2))")).to eq list(int(1), int(2))
+      expect(Rqlisp::Runtime.new.run("(append '(1 2) '(3))")).to eq list(int(1), int(2), int(3))
+    end
+  end
 end

@@ -4,6 +4,7 @@ module Rqlisp
 
     BUILT_IN_FUNCTIONS = [
       {name: :addition, symbol: "+", args: %w(a b)},
+      {name: :append, symbol: "append", args: %w(&rest lists)},
       {name: :car, symbol: "car", args: %w(lst)},
       {name: :cdr, symbol: "cdr", args: %w(lst)},
       {name: :empty?, symbol: "empty?", args: %w(expr)},
@@ -38,6 +39,13 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       int(a.value + b.value)
+    end
+
+    # FIXME: Error checking; all args must be lists.
+    def self.append(env)
+      lists = env.lookup(var(:lists))
+      list_arr = lists.to_array.map(&:to_array)
+      list(*list_arr.flatten)
     end
 
     def self.car(env)

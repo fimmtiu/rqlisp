@@ -1,7 +1,5 @@
 module Rqlisp
   class Function < DataType
-    include DataHelpers
-
     attr_reader :env, :args, :code
 
     def initialize(env:, args:, code:)

@@ -23,31 +23,11 @@ module Rqlisp
         expr
 
       when Rqlisp::Variable
-        case expr.value
-        when :true then Rqlisp::TRUE
-        when :false then Rqlisp::FALSE
-        else env.lookup(expr)
-        end
+        eval_variable(expr, env)
 
       when Rqlisp::List
-        case expr[0]
-        when var("fn")
-          raise "'fn' requires an argument list!" if !expr[1].is_a?(List)
-          Rqlisp::Function.new(env: env, args: expr[1], code: expr.cdr.cdr)
-        when var("quote")
-          raise "'quote' takes only one argument!" if expr.cdr.length != 1
-          expr.cdr.car
-        when var("do")
-          last_value = List::EMPTY
-          expr.cdr.to_array.each do |inner_expr|
-            last_value = eval(inner_expr, env)
-          end
-          last_value
-        else
-          function = eval(expr[0], env)
-          arguments = expr.cdr.to_array.map { |arg| eval(arg, env) }
-          apply(function, arguments)
-        end
+        eval_list(expr, env)
+
       else
         binding.pry
         raise "wtf"
@@ -57,6 +37,35 @@ module Rqlisp
     def top_level_env
       Env.new(parent: nil).tap do |env|
         Rqlisp::Builtins.add_to_environment(env)
+      end
+    end
+
+    def eval_variable(expr, env)
+      case expr.value
+      when :true then Rqlisp::TRUE
+      when :false then Rqlisp::FALSE
+      else env.lookup(expr)
+      end
+    end
+
+    def eval_list(expr, env)
+      case expr[0]
+      when var("fn")
+        raise "'fn' requires an argument list!" if !expr[1].is_a?(List)
+        Rqlisp::Function.new(env: env, args: expr[1], code: expr.cdr.cdr)
+      when var("quote")
+        raise "'quote' takes only one argument!" if expr.cdr.length != 1
+        expr.cdr.car
+      when var("do")
+        last_value = List::EMPTY
+        expr.cdr.to_array.each do |inner_expr|
+          last_value = eval(inner_expr, env)
+        end
+        last_value
+      else
+        function = eval(expr[0], env)
+        arguments = expr.cdr.to_array.map { |arg| eval(arg, env) }
+        apply(function, arguments)
       end
     end
 

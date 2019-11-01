@@ -1,4 +1,5 @@
 require "rqlisp/data_helpers"
+require "rqlisp/builtins"
 require "rqlisp/data_type"
 require "rqlisp/env"
 require "rqlisp/function"

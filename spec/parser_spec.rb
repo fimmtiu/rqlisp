@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe Rqlisp::Parser do
-  extend DataHelpers
+  extend Rqlisp::DataHelpers
 
   TEST_CASES = {
     "integer" => [

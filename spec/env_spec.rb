@@ -1,8 +1,8 @@
 require "spec_helper"
 
 RSpec.describe Rqlisp::Env do
-  let(:top_level_env) { described_class.new(nil, foo: int(1)) }
-  let(:child_env) { described_class.new(top_level_env, bar: int(2)) }
+  let(:top_level_env) { described_class.new(parent: nil, vars: { foo: int(1) }) }
+  let(:child_env) { described_class.new(parent: top_level_env, vars: { bar: int(2) }) }
 
   describe "#lookup" do
     it "looks up variables recursively" do

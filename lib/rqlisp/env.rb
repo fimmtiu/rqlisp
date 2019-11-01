@@ -2,13 +2,9 @@ module Rqlisp
   class Env < DataType
     attr_reader :vars
 
-    def initialize(parent_env, vars = {})
-      @parent_env = parent_env
+    def initialize(parent:, vars: {})
+      @parent_env = parent
       @vars = vars
-    end
-
-    def literal?
-      true
     end
 
     def lookup(var)

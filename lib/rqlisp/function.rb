@@ -27,6 +27,7 @@ module Rqlisp
              else
                code.cdr.to_s[1..-2]   # ignore the "do" block
              end
+      binding.pry
       "(fn #{args} #{body})"
     end
 
@@ -49,9 +50,9 @@ module Rqlisp
       new_local_env = Rqlisp::Env.new(parent: env)
 
       if arg_values.length < @arity
-        raise "Not enough arguments to #{self}! Expected #{@args.length}, got #{arg_values.length}"
+        raise "Not enough arguments to #{self}! Expected #{@arity}, got #{arg_values.length}"
       elsif !has_rest_args? && arg_values.length > @arity
-        raise "Too many arguments to #{self}! Expected #{@args.length}, got #{arg_values.length}"
+        raise "Too many arguments to #{self}! Expected #{@arity}, got #{arg_values.length}"
       end
 
       @args.to_array.each_with_index do |arg_name, i|

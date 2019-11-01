@@ -1,3 +1,16 @@
 #!/usr/bin/env ruby
 
 require "rqlisp"
+require "optparse"
+
+code = nil
+OptionParser.new do |opts|
+  opts.banner = "Usage: rqlisp [-c code | files...]"
+
+  opts.on("-c", "--code=CODE", "Specify code on the command line") do |c|
+    code = c
+  end
+end.parse!
+code ||= ARGF.read
+
+puts Rqlisp.run(code).to_s

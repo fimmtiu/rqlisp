@@ -65,13 +65,13 @@ module Rqlisp
         Rqlisp::Function.new(env: env, args: self[1], code: cdr.cdr)
       when var("defmacro")
         raise "'defmacro' requires a name and argument list!" if !self[2].is_a?(List)
-        macro = Rqlisp::Macro.new(env: env, args: self[2], code: cdr.cdr)
+        macro = Rqlisp::Macro.new(env: env, args: self[2], code: cdr.cdr.cdr)
         env.set(self[1], macro)
       when var("quote")
         raise "'quote' takes only one argument!" if cdr.length != 1
         cdr.car
       when var("if")
-        # FIXME error handling
+        # FIXME needs error handling
         condition = self[1].eval(env)
         if condition != FALSE && condition != NIL
           self[2].eval(env)

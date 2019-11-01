@@ -44,6 +44,12 @@ RSpec.describe Rqlisp::Parser do
       ["'(1)", list(var(:quote), list(int(1)))],
       ["'(1 2)", list(var(:quote), list(int(1), int(2)))],
     ],
+    "quasiquoting" => [
+      ["`()", list(var(:quasiquote), list())],
+      ["`1", list(var(:quasiquote), int(1))],
+      ["`(1)", list(var(:quasiquote), list(int(1)))],
+      ["`(1 ,2)", list(var(:quasiquote), list(int(1), list(var(:unquote), int(2))))],
+    ],
   }
 
   TEST_CASES.each do |category, subtests|

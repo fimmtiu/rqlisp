@@ -20,7 +20,10 @@ module Rqlisp
       rule(:list)        { str('(') >> space? >> expressions.as(:list) >> str(')') >> space? }
       rule(:variable)    { match('[a-zA-Z0-9?&<>=*+-]').repeat(1).as(:variable) >> space? }
       rule(:quote)       { str("'") >> expression.as(:quote) >> space? }
-      rule(:expression)  { list | string | integer | comment | variable | quote }
+      rule(:quasiquote)  { str("`") >> expression.as(:quasiquote) >> space? }
+      rule(:unquote_sp)  { str(",@") >> expression.as(:unquote_sp) >> space? }
+      rule(:unquote)     { str(",") >> expression.as(:unquote) >> space? }
+      rule(:expression)  { list | string | integer | comment | variable | quote | quasiquote | unquote | unquote_sp }
       rule(:expressions) { expression.repeat(0) }
       root :expressions
     end
@@ -50,8 +53,8 @@ module Rqlisp
           # FIXME: This is a quick hack to fix the escaped double quote parsing. Should fix the rule instead.
           Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
         end
-      when :quote
-        Rqlisp::List.from_array(Rqlisp::Variable.new(:quote), convert_expr_to_rqlisp_data(value))
+      when :quote, :quasiquote, :unquote, :unquote_sp
+        Rqlisp::List.from_array(Rqlisp::Variable.new(type), convert_expr_to_rqlisp_data(value))
       else
         binding.pry
         raise "wtf"

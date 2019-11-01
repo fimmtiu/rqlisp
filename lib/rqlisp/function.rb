@@ -8,7 +8,7 @@ module Rqlisp
       @args = args
       # FIXME: This arg counting is very inexact, and should be tightened up later.
       @rest_var = args.to_array.last if args.to_array.include?(var("&rest"))
-      @arity = args.to_array.slice_before("&rest").first&.count || 0
+      @arity = args.to_array.slice_before(var("&rest")).first&.count || 0
 
       if code.is_a?(Method)
         @code = code
@@ -27,7 +27,6 @@ module Rqlisp
              else
                code.cdr.to_s[1..-2]   # ignore the "do" block
              end
-      binding.pry
       "(fn #{args} #{body})"
     end
 
@@ -46,6 +45,7 @@ module Rqlisp
       end
     end
 
+    # FIXME: This method has gotten a little long. Maybe pull the error handling out?
     def env_with_funcall_args(arg_values, env)
       new_local_env = Rqlisp::Env.new(parent: env)
 

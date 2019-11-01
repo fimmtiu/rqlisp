@@ -71,11 +71,11 @@ RSpec.describe Rqlisp::Runtime do
       end
     end
 
-    describe "def" do
-      it "creates a new function with the given name in the current env" do
-        function = described_class.new.run('(def foo () 1) foo')
-        expect(function).to be_a Rqlisp::Function
-      end
-    end
+    # describe "def" do
+    #   it "creates a new function with the given name in the current env" do
+    #     function = described_class.new.run('(def foo () 1) foo')
+    #     expect(function).to be_a Rqlisp::Function
+    #   end
+    # end
   end
 end

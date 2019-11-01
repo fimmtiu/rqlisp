@@ -36,13 +36,13 @@ RSpec.describe Rqlisp::Builtins do
 
   describe ".equal?" do
     it "returns true when a and b are the same" do
-      expect(Rqlisp::Runtime.new.run('(eq? 2 2)')).to eq Rqlisp::TRUE
-      expect(Rqlisp::Runtime.new.run('(eq? "foo" "foo")')).to eq Rqlisp::TRUE
+      expect(Rqlisp::Runtime.new.run('(= 2 2)')).to eq Rqlisp::TRUE
+      expect(Rqlisp::Runtime.new.run('(= "foo" "foo")')).to eq Rqlisp::TRUE
     end
 
     it "returns false when a and b are different" do
-      expect(Rqlisp::Runtime.new.run('(eq? 1 2)')).to eq Rqlisp::FALSE
-      expect(Rqlisp::Runtime.new.run('(eq? "foo" "bar")')).to eq Rqlisp::FALSE
+      expect(Rqlisp::Runtime.new.run('(= 1 2)')).to eq Rqlisp::FALSE
+      expect(Rqlisp::Runtime.new.run('(= "foo" "bar")')).to eq Rqlisp::FALSE
     end
   end
 end

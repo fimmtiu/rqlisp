@@ -12,5 +12,9 @@ module Rqlisp
     def to_s
       value.to_s
     end
+
+    def eval(_env)
+      self
+    end
   end
 end

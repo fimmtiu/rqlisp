@@ -56,5 +56,36 @@ module Rqlisp
     def to_s
       "(" + to_array.join(" ") + ")"
     end
+
+    # FIXME: Break up this method.
+    def eval(env)
+      case car
+      when var("fn")
+        raise "'fn' requires an argument list!" if !self[1].is_a?(List)
+        Rqlisp::Function.new(env: env, args: self[1], code: cdr.cdr)
+      when var("quote")
+        raise "'quote' takes only one argument!" if cdr.length != 1
+        cdr.car
+      when var("if")
+        # FIXME error handling
+        condition = eval(self[1], env)
+        if condition != FALSE && condition != NIL
+          eval(self[2], env)
+        elsif expr.length > 3
+          eval(self[3], env)
+        else
+          NIL
+        end
+      when var("do")
+        last_value = List::EMPTY
+        cdr.to_array.each do |inner_expr|
+          last_value = inner_expr.eval(env)
+        end
+        last_value
+      else
+        function = car.eval(env)
+        function.call(cdr.to_array)
+      end
+    end
   end
 end

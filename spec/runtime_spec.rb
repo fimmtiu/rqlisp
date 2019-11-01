@@ -51,5 +51,12 @@ RSpec.describe Rqlisp::Runtime do
         expect(described_class.new.run("(if nil 1 2)")).to eq int(2)
       end
     end
+
+    describe "defmacro" do
+      it "creates a new macro with the given name in the current env" do
+        macro = described_class.new.run('(defmacro foo () 1) foo')
+        expect(macro).to be_a Rqlisp::Macro
+      end
+    end
   end
 end

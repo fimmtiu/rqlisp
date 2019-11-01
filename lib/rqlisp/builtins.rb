@@ -11,12 +11,7 @@ module Rqlisp
     ]
 
     BUILT_IN_MACROS = [
-      {name: :defmacro, symbol: "defmacro", args: %w(name args code)},
       {name: :set, symbol: "set", args: %w(variable value)},
-    ]
-
-    DERIVED_MACROS = [
-      "(defmacro)"
     ]
 
     def self.add_to_environment(env)
@@ -37,15 +32,6 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       int(a.value + b.value)
-    end
-
-    def self.defmacro(env)
-      name = env.lookup(var(:name))
-      args = env.lookup(var(:args))
-      code = env.lookup(var(:code))
-      value = value_expr.eval(env)
-      env.parent_env.set(variable, value)
-      value
     end
 
     def self.equal?(env)

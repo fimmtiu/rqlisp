@@ -16,6 +16,11 @@ RSpec.describe Rqlisp::Runtime do
       expect(described_class.new.run("(quote (1))")).to eq list(int(1))
     end
 
+    it "treats 'true' and 'false' specially" do
+      expect(described_class.new.run("true")).to eq Rqlisp::TRUE
+      expect(described_class.new.run("false")).to eq Rqlisp::FALSE
+    end
+
     it "applies builtin functions" do
       expect(described_class.new.run("(+ 1 2)")).to eq int(3)
     end

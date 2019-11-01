@@ -37,3 +37,15 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/fimmti
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
+## Todo
+
+* `list` builtin
+* `if`
+* A couple of comparison operators (`eq`, `<`, `>`)
+* A macro system
+* `def`
+* Rip most of the crap out of DataType
+* Rest args
+  * Go back and fix up the other builtins to use them

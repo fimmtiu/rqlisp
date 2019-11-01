@@ -23,7 +23,11 @@ module Rqlisp
         expr
 
       when Rqlisp::Variable
-        env.lookup(expr)
+        case expr.value
+        when :true then Rqlisp::TRUE
+        when :false then Rqlisp::FALSE
+        else env.lookup(expr)
+        end
 
       when Rqlisp::List
         case expr[0]
@@ -35,8 +39,8 @@ module Rqlisp
           expr.cdr.car
         when var("do")
           last_value = List::EMPTY
-          expr.cdr.to_array.each do |expr|
-            last_value = eval(expr, env)
+          expr.cdr.to_array.each do |inner_expr|
+            last_value = eval(inner_expr, env)
           end
           last_value
         else

@@ -2,11 +2,14 @@ module Rqlisp
   class Runtime
     include DataHelpers
 
-    # DERIVED_EXPRESSIONS = <<~CODE
-    #   ;; FIXME: Can't write this properly without quasiquote.
-    #   (defmacro def (name args &rest code)
-    #     (set name (fn args code)))
-    # CODE
+    DERIVED_EXPRESSIONS = <<~CODE
+      (defmacro quasiquote (expr)
+         FIXME)
+
+      ;; FIXME: Can't write this properly without quasiquote.
+      ;; (defmacro def (name args &rest code)
+      ;;   (set name (fn args code)))
+    CODE
 
     attr_reader :code, :parser
 
@@ -30,8 +33,8 @@ module Rqlisp
     def top_level_env
       Env.new(parent: nil).tap do |env|
         Rqlisp::Builtins.add_to_environment(env)
-        # derived_exprs = parser.parse(DERIVED_EXPRESSIONS)
-        # derived_exprs.to_array.map { |expr| expr.eval(env) }
+        derived_exprs = parser.parse(DERIVED_EXPRESSIONS)
+        derived_exprs.to_array.map { |expr| expr.eval(env) }
       end
     end
   end

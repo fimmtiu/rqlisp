@@ -16,5 +16,9 @@ module Rqlisp
     def eval(_env)
       self
     end
+
+    def type
+      self.class.name.sub("Rqlisp::", "").downcase
+    end
   end
 end

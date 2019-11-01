@@ -8,6 +8,7 @@ module Rqlisp
       {name: :greater_than?, symbol: ">", args: %w(a b)},
       {name: :less_than?, symbol: "<", args: %w(a b)},
       {name: :print, symbol: "print", args: %w(expr)},
+      {name: :type_of, symbol: "type-of", args: %w(expr)},
     ]
 
     BUILT_IN_MACROS = [
@@ -64,6 +65,11 @@ module Rqlisp
       value = value_expr.eval(env)
       env.parent_env.set(variable, value)
       value
+    end
+
+    def self.type_of(env)
+      expr = env.lookup(var(:expr))
+      str(expr.type)
     end
   end
 end

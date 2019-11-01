@@ -13,5 +13,9 @@ module Rqlisp
     def to_s
       name.to_s
     end
+
+    def type
+      name
+    end
   end
 end

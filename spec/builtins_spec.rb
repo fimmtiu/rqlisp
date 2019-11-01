@@ -55,4 +55,13 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run('((fn (a) (set a 2) a) 1)')).to eq int(2)
     end
   end
+
+  describe ".type_of" do
+    it "returns type names for objects" do
+      expect(Rqlisp::Runtime.new.run('(type-of 1)')).to eq str("integer")
+      expect(Rqlisp::Runtime.new.run('(type-of "woo")')).to eq str("string")
+      expect(Rqlisp::Runtime.new.run('(type-of (fn () 1))')).to eq str("function")
+      expect(Rqlisp::Runtime.new.run('(type-of nil)')).to eq str("nil")
+    end
+  end
 end

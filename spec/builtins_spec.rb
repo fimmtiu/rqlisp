@@ -84,4 +84,25 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run("(cdr '())")).to eq Rqlisp::NIL
     end
   end
+
+  describe ".nil?" do
+    it "returns true if the value is nil" do
+      expect(Rqlisp::Runtime.new.run("(nil? nil)")).to eq Rqlisp::TRUE
+    end
+
+    it "returns false if the value is not nil" do
+      expect(Rqlisp::Runtime.new.run("(nil? 1)")).to eq Rqlisp::FALSE
+    end
+  end
+
+  describe ".empty?" do
+    it "returns true if the value is an empty list" do
+      expect(Rqlisp::Runtime.new.run("(empty? '())")).to eq Rqlisp::TRUE
+    end
+
+    it "returns false if the value is not an empty list" do
+      expect(Rqlisp::Runtime.new.run("(empty? '(1))")).to eq Rqlisp::FALSE
+      expect(Rqlisp::Runtime.new.run("(empty? 2)")).to eq Rqlisp::FALSE
+    end
+  end
 end

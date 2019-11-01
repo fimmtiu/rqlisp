@@ -6,9 +6,11 @@ module Rqlisp
       {name: :addition, symbol: "+", args: %w(a b)},
       {name: :car, symbol: "car", args: %w(lst)},
       {name: :cdr, symbol: "cdr", args: %w(lst)},
+      {name: :empty?, symbol: "empty?", args: %w(expr)},
       {name: :equal?, symbol: "=", args: %w(a b)},
       {name: :greater_than?, symbol: ">", args: %w(a b)},
       {name: :less_than?, symbol: "<", args: %w(a b)},
+      {name: :nil?, symbol: "nil?", args: %w(expr)},
       {name: :print, symbol: "print", args: %w(expr)},
       {name: :type_of, symbol: "type-of", args: %w(expr)},
     ]
@@ -45,6 +47,11 @@ module Rqlisp
       env.lookup(var(:lst)).cdr || NIL
     end
 
+    def self.empty?(env)
+      expr = env.lookup(var(:expr))
+      expr == List::EMPTY ? TRUE : FALSE
+    end
+
     def self.equal?(env)
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
@@ -61,6 +68,11 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       a.value < b.value ? TRUE : FALSE
+    end
+
+    def self.nil?(env)
+      expr = env.lookup(var(:expr))
+      expr == NIL ? TRUE : FALSE
     end
 
     def self.print(env)

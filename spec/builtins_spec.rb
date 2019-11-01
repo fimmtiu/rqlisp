@@ -14,7 +14,7 @@ RSpec.describe Rqlisp::Builtins do
     end
   end
 
-  describe ".less_than" do
+  describe ".less_than?" do
     it "returns true when a is < b" do
       expect(Rqlisp::Runtime.new.run("(< 1 2)")).to eq Rqlisp::TRUE
     end
@@ -24,13 +24,25 @@ RSpec.describe Rqlisp::Builtins do
     end
   end
 
-  describe ".greater_than" do
+  describe ".greater_than?" do
     it "returns true when a is > b" do
       expect(Rqlisp::Runtime.new.run("(> 2 1)")).to eq Rqlisp::TRUE
     end
 
     it "returns false when a is <= b" do
       expect(Rqlisp::Runtime.new.run("(> 2 2)")).to eq Rqlisp::FALSE
+    end
+  end
+
+  describe ".equal?" do
+    it "returns true when a and b are the same" do
+      expect(Rqlisp::Runtime.new.run('(eq? 2 2)')).to eq Rqlisp::TRUE
+      expect(Rqlisp::Runtime.new.run('(eq? "foo" "foo")')).to eq Rqlisp::TRUE
+    end
+
+    it "returns false when a and b are different" do
+      expect(Rqlisp::Runtime.new.run('(eq? 1 2)')).to eq Rqlisp::FALSE
+      expect(Rqlisp::Runtime.new.run('(eq? "foo" "bar")')).to eq Rqlisp::FALSE
     end
   end
 end

@@ -23,7 +23,7 @@ module Rqlisp
     def self.print(env)
       expr = env.lookup(var(:expr))
       puts expr.to_s
-      TRUE
+      NIL
     end
   end
 end

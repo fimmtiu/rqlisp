@@ -41,11 +41,10 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todo
 
-* `list` builtin
-* `if`
 * A couple of comparison operators (`eq`, `<`, `>`)
 * A macro system
 * `def`
 * Rip most of the crap out of DataType
 * Rest args
+  * Add `list` builtin
   * Go back and fix up the other builtins to use them

@@ -16,9 +16,10 @@ RSpec.describe Rqlisp::Runtime do
       expect(described_class.new.run("(quote (1))")).to eq list(int(1))
     end
 
-    it "treats 'true' and 'false' specially" do
+    it "evals unique constants specially" do
       expect(described_class.new.run("true")).to eq Rqlisp::TRUE
       expect(described_class.new.run("false")).to eq Rqlisp::FALSE
+      expect(described_class.new.run("nil")).to eq Rqlisp::NIL
     end
 
     it "applies builtin functions" do
@@ -27,6 +28,28 @@ RSpec.describe Rqlisp::Runtime do
 
     it "applies functions defined by 'fn'" do
       expect(described_class.new.run("((fn (i) (+ i 3)) 1)")).to eq int(4)
+    end
+
+    describe "if" do
+      it "calls the first branch if the condition is true" do
+        expect(described_class.new.run("(if true 1 2)")).to eq int(1)
+      end
+
+      it "calls the first branch if the condition is true-ish" do
+        expect(described_class.new.run("(if 31337 1 2)")).to eq int(1)
+      end
+
+      it "returns nil if the condition is false but there's no second branch" do
+        expect(described_class.new.run("(if false 1)")).to eq Rqlisp::NIL
+      end
+
+      it "calls the second branch if the condition is false" do
+        expect(described_class.new.run("(if false 1 2)")).to eq int(2)
+      end
+
+      it "calls the second branch if the condition is nil" do
+        expect(described_class.new.run("(if nil 1 2)")).to eq int(2)
+      end
     end
   end
 end

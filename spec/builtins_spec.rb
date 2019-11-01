@@ -10,7 +10,7 @@ RSpec.describe Rqlisp::Builtins do
   describe ".print" do
     it "prints the representation of an object to stdout" do
       expect(described_class).to receive(:puts).with("(1 2)")
-      expect(Rqlisp::Runtime.new.run("(print '(1 2))")).to eq Rqlisp::TRUE
+      expect(Rqlisp::Runtime.new.run("(print '(1 2))")).to eq Rqlisp::NIL
     end
   end
 end

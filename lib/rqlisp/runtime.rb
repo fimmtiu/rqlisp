@@ -44,10 +44,12 @@ module Rqlisp
       case expr.value
       when :true then Rqlisp::TRUE
       when :false then Rqlisp::FALSE
+      when :nil then Rqlisp::NIL
       else env.lookup(expr)
       end
     end
 
+    # FIXME: Break up this method.
     def eval_list(expr, env)
       case expr[0]
       when var("fn")
@@ -56,6 +58,16 @@ module Rqlisp
       when var("quote")
         raise "'quote' takes only one argument!" if expr.cdr.length != 1
         expr.cdr.car
+      when var("if")
+        # FIXME error handling
+        condition = eval(expr[1], env)
+        if condition != FALSE && condition != NIL
+          eval(expr[2], env)
+        elsif expr.length > 3
+          eval(expr[3], env)
+        else
+          NIL
+        end
       when var("do")
         last_value = List::EMPTY
         expr.cdr.to_array.each do |inner_expr|

@@ -34,10 +34,8 @@ module Rqlisp
     def apply(arguments, env: @env)
       local_env = env_with_funcall_args(arguments, env)
       if code.is_a?(Method)
-        puts "method env: #{local_env}"
         code.call(local_env)
       else
-        puts "apply env: #{local_env}"
         code.eval(local_env)
       end
     end

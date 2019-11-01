@@ -3,26 +3,32 @@ module Rqlisp
     extend DataHelpers
 
     BUILT_IN_FUNCTIONS = [
-      {name: :addition, symbol: "+", args: list(var("a"), var("b"))},
-      {name: :equal?, symbol: "=", args: list(var("a"), var("b"))},
-      {name: :greater_than?, symbol: ">", args: list(var("a"), var("b"))},
-      {name: :less_than?, symbol: "<", args: list(var("a"), var("b"))},
-      {name: :print, symbol: "print", args: list(var("expr"))},
+      {name: :addition, symbol: "+", args: %w(a b)},
+      {name: :equal?, symbol: "=", args: %w(a b)},
+      {name: :greater_than?, symbol: ">", args: %w(a b)},
+      {name: :less_than?, symbol: "<", args: %w(a b)},
+      {name: :print, symbol: "print", args: %w(expr)},
     ]
 
     BUILT_IN_MACROS = [
-      # {name: :def, symbol: "def", args: list(var("args"), var("code"))},
-      {name: :set, symbol: "set", args: list(var("variable"), var("value"))},
+      {name: :defmacro, symbol: "defmacro", args: %w(name args code)},
+      {name: :set, symbol: "set", args: %w(variable value)},
+    ]
+
+    DERIVED_MACROS = [
+      "(defmacro)"
     ]
 
     def self.add_to_environment(env)
       BUILT_IN_FUNCTIONS.each do |builtin|
-        function = Rqlisp::Function.new(env: env, args: builtin[:args], code: method(builtin[:name]))
+        args = list(*builtin[:args].map { |name| var(name) })
+        function = Rqlisp::Function.new(env: env, args: args, code: method(builtin[:name]))
         env.define(var(builtin[:symbol]), function)
       end
 
       BUILT_IN_MACROS.each do |builtin|
-        macro = Rqlisp::Macro.new(env: env, args: builtin[:args], code: method(builtin[:name]))
+        args = list(*builtin[:args].map { |name| var(name) })
+        macro = Rqlisp::Macro.new(env: env, args: args, code: method(builtin[:name]))
         env.define(var(builtin[:symbol]), macro)
       end
     end
@@ -31,6 +37,15 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       int(a.value + b.value)
+    end
+
+    def self.defmacro(env)
+      name = env.lookup(var(:name))
+      args = env.lookup(var(:args))
+      code = env.lookup(var(:code))
+      value = value_expr.eval(env)
+      env.parent_env.set(variable, value)
+      value
     end
 
     def self.equal?(env)
@@ -62,8 +77,6 @@ module Rqlisp
       value_expr = env.lookup(var(:value))
       value = value_expr.eval(env)
       env.parent_env.set(variable, value)
-      puts "set env: #{env}"
-      puts "set parent env: #{env.parent_env}"
       value
     end
   end

@@ -4,6 +4,8 @@ module Rqlisp
 
     BUILT_IN_FUNCTIONS = [
       {name: :addition, symbol: "+", args: %w(a b)},
+      {name: :car, symbol: "car", args: %w(lst)},
+      {name: :cdr, symbol: "cdr", args: %w(lst)},
       {name: :equal?, symbol: "=", args: %w(a b)},
       {name: :greater_than?, symbol: ">", args: %w(a b)},
       {name: :less_than?, symbol: "<", args: %w(a b)},
@@ -33,6 +35,14 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       int(a.value + b.value)
+    end
+
+    def self.car(env)
+      env.lookup(var(:lst)).car || NIL
+    end
+
+    def self.cdr(env)
+      env.lookup(var(:lst)).cdr || NIL
     end
 
     def self.equal?(env)

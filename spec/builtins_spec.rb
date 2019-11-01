@@ -64,4 +64,24 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run('(type-of nil)')).to eq str("nil")
     end
   end
+
+  describe ".car" do
+    it "returns the car of a list" do
+      expect(Rqlisp::Runtime.new.run("(car '(1 2))")).to eq int(1)
+    end
+
+    it "returns nil for an empty list" do
+      expect(Rqlisp::Runtime.new.run("(car '())")).to eq Rqlisp::NIL
+    end
+  end
+
+  describe ".cdr" do
+    it "returns the cdr of a list" do
+      expect(Rqlisp::Runtime.new.run("(cdr '(1 2))")).to eq list(int(2))
+    end
+
+    it "returns nil for an empty list" do
+      expect(Rqlisp::Runtime.new.run("(cdr '())")).to eq Rqlisp::NIL
+    end
+  end
 end

@@ -7,25 +7,26 @@ RSpec.describe Rqlisp::Runtime do
     end
   end
 
-  describe "#eval" do
+  describe "#run" do
     it "returns literal strings and integers" do
-      expect(described_class.new.eval(int(1), env)).to eq int(1)
-      expect(described_class.new.eval(str("foo"), env)).to eq str("foo")
+      expect(described_class.new.run("1")).to eq int(1)
+      expect(described_class.new.run('"foo"')).to eq str("foo")
     end
 
     it "creates function objects from 'fn' lists" do
-      fn_list = list(var("fn"), list(var(:foo)), int(1))
-      expect(described_class.new.eval(fn_list, env)).to eq fn(env, list(var(:foo)), list(int(1)))
+      expect(described_class.new.run("(fn (foo) 1)")).to eq fn(env, list(var(:foo)), list(int(1)))
     end
 
     it "returns quoted objects from quote" do
-      quoted = list(var("quote"), list(int(1)))
-      expect(described_class.new.eval(quoted, env)).to eq list(int(1))
+      expect(described_class.new.run("(quote (1))")).to eq list(int(1))
     end
 
     it "applies builtin functions" do
-      addition = list(var("+"), int(1), int(2))
-      expect(described_class.new.eval(addition, env)).to eq int(3)
+      expect(described_class.new.run("(+ 1 2)")).to eq int(3)
+    end
+
+    it "applies functions defined by 'fn'" do
+      expect(described_class.new.run("((fn (i) (+ i 3)) 1)")).to eq int(4)
     end
   end
 end

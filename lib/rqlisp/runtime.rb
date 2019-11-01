@@ -10,10 +10,12 @@ module Rqlisp
 
     def run(source_code)
       code = parser.parse(source_code)
-      top_level_env = Env.new(parent: nil)
-      Rqlisp::Builtins.add_to_environment(top_level_env)
-      eval(list(list(var("fn"), list(), *code)), top_level_env)
+      top_level_expr = list(list(var("fn"), list()))
+      top_level_expr.car.cdr.cdr = code
+      eval(top_level_expr, top_level_env)
     end
+
+    private
 
     def eval(expr, env)
       case expr
@@ -31,19 +33,30 @@ module Rqlisp
         when var("quote")
           raise "'quote' takes only one argument!" if expr.cdr.length != 1
           expr.cdr.car
+        when var("do")
+          last_value = List::EMPTY
+          expr.cdr.to_array.each do |expr|
+            last_value = eval(expr, env)
+          end
+          last_value
         else
           function = eval(expr[0], env)
-          binding.pry
-          apply(function, expr.cdr)
+          arguments = expr.cdr.to_array.map { |arg| eval(arg, env) }
+          apply(function, arguments)
         end
       else
+        binding.pry
         raise "wtf"
       end
     end
 
-    private
+    def top_level_env
+      Env.new(parent: nil).tap do |env|
+        Rqlisp::Builtins.add_to_environment(env)
+      end
+    end
 
-    def env_for_funcall(function, args)
+    def env_with_funcall_args(function, args)
       env = Rqlisp::Env.new(parent: function.env)
       function.args.to_array.each_with_index do |arg_name, i|
         env.define(arg_name, args[i])
@@ -52,7 +65,7 @@ module Rqlisp
     end
 
     def apply(function, args)
-      env = env_for_funcall(function, args)
+      env = env_with_funcall_args(function, args)
       if function.code.is_a?(Method)
         function.code.call(env)
       else

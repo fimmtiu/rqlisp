@@ -1,7 +1,6 @@
 module Rqlisp
   module Builtins
     extend DataHelpers
-    include DataHelpers
 
     def self.add_to_environment(env)
       [

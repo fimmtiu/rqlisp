@@ -15,7 +15,8 @@ module Rqlisp
 
     EMPTY = EmptyList.new
 
-    attr_reader :car, :cdr
+    attr_accessor :car
+    attr_reader :cdr
 
     def self.from_array(*items)
       new_list = EMPTY
@@ -26,9 +27,13 @@ module Rqlisp
     end
 
     def initialize(car, cdr = EMPTY)
-      @car = car
-      raise "Dotted lists are a pain in the ass!" if !cdr.is_a?(List)
-      @cdr = cdr
+      self.car = car
+      self.cdr = cdr
+    end
+
+    def cdr=(new_cdr)
+      raise "Dotted lists are a pain in the ass!" if !new_cdr.is_a?(List)
+      @cdr = new_cdr
     end
 
     def [](index)

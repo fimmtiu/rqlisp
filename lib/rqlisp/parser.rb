@@ -18,7 +18,7 @@ module Rqlisp
         str('"') >> space?
       }
       rule(:list)        { str('(') >> space? >> expressions.as(:list) >> str(')') >> space? }
-      rule(:variable)    { match('[a-zA-Z0-9?<>=*+-]').repeat(1).as(:variable) >> space? }
+      rule(:variable)    { match('[a-zA-Z0-9?&<>=*+-]').repeat(1).as(:variable) >> space? }
       rule(:quote)       { str("'") >> expression.as(:quote) >> space? }
       rule(:expression)  { list | string | integer | comment | variable | quote }
       rule(:expressions) { expression.repeat(0) }

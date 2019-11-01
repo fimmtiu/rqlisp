@@ -42,10 +42,29 @@ module Rqlisp
 
     def env_with_funcall_args(arg_values, env)
       new_local_env = Rqlisp::Env.new(parent: env)
-      @args.to_array.each_with_index do |arg_name, i|
-        new_local_env.define(arg_name, arg_values[i])
+
+      if arg_values.length < @args.length
+        raise "Not enough arguments to #{self}! Expected #{@args.length}, got #{arg_values.length}"
+      elsif !has_rest_args? && arg_values.length > @args.length
+        raise "Too many arguments to #{self}! Expected #{@args.length}, got #{arg_values.length}"
       end
+
+      @args.to_array.each_with_index do |arg_name, i|
+        if arg_name == var("&rest")
+          rest_var = @args.to_array.last
+          rest_values = list(*arg_values[i..-1])
+          new_local_env.define(rest_var, rest_values)
+          break
+        else
+          new_local_env.define(arg_name, arg_values[i])
+        end
+      end
+
       new_local_env
+    end
+
+    def has_rest_args?
+      args.to_array.any? { |arg| arg.value == :"&rest" }
     end
   end
 end

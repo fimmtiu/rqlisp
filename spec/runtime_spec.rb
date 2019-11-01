@@ -30,6 +30,18 @@ RSpec.describe Rqlisp::Runtime do
       expect(described_class.new.run("((fn (i) (+ i 3)) 1)")).to eq int(4)
     end
 
+    it "throws an error if there aren't enough args to a function" do
+      expect { described_class.new.run("((fn (a) a))") }.to raise_error(/Not enough arguments/)
+    end
+
+    it "throws an error if there are too many args to a function" do
+      expect { described_class.new.run("((fn () 1) 2)") }.to raise_error(/Too many arguments/)
+    end
+
+    it "allows functions with &rest args to take more arguments" do
+      expect(described_class.new.run("((fn (a &rest b) b) 1 2 3)")).to eq list(int(2), int(3))
+    end
+
     describe "if" do
       it "calls the first branch if the condition is true" do
         expect(described_class.new.run("(if true 1 2)")).to eq int(1)

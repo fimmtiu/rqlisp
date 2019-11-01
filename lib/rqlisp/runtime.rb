@@ -3,12 +3,6 @@ module Rqlisp
     include DataHelpers
 
     DERIVED_EXPRESSIONS = <<~CODE
-      ;; (defmacro and (&rest exprs)
-      ;;   (if (car expr) ))
-
-      ;; (defmacro quasiquote (expr)
-      ;;    (if (= (type-of expr) "list")
-
       ;; FIXME: Can't write this properly without quasiquote.
       ;; (defmacro def (name args &rest code)
       ;;   (set name (fn args code)))

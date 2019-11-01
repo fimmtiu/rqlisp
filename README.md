@@ -1,38 +1,32 @@
 # Rqlisp
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rqlisp`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is a little Lisp interpreter which I threw together over the course of about 1.5 working days. I didn't get as far as I'd like, but it's still not bad. The only data types at this point are strings, integers, functions, and macros. (No quasiquotation yet, though.)
 
-TODO: Delete this and the text above, and describe your gem
+```lisp
+(set print-number-range
+  (fn (n max)
+    (if (> n max)
+      nil
+      (do
+        (print n)
+        (print-number-range (+ n 1) max)))))
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'rqlisp'
+;; Prints the integers between 3 and 10, inclusive
+(print-number-range 3 10)
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install rqlisp
 
 ## Usage
 
-TODO: Write usage instructions here
+With code in files:
+```
+$ ruby -Ilib exe/rqlisp code.l
+```
 
-## Development
+With code on the command line:
+```
+$ ruby -Ilib exe/rqlisp -c '(print "hello, world!")'
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/fimmtiu/rqlisp.
 
 ## License
 
@@ -41,9 +35,12 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todo
 
-* Rest args
-  * Add `list` builtin
-  * Go back and fix up the other builtins to use them
+* Quasiquotation
+* Add `list` builtin
+* Go back and fix up the `=`, `<`, etc. builtins to use rest args
 * `def`
 * Move specs out of Runtime into the individual data types' specs
 * Rip most of the crap out of DataType
+* Way more error checking
+* Add new data types (floats, symbols, etc.)
+* Lots, lots, lots more stuff.

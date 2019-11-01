@@ -10,6 +10,7 @@ module Rqlisp
       {name: :equal?, symbol: "=", args: %w(a b)},
       {name: :greater_than?, symbol: ">", args: %w(a b)},
       {name: :less_than?, symbol: "<", args: %w(a b)},
+      {name: :list_builtin, symbol: "list", args: %w(&rest exprs)},
       {name: :nil?, symbol: "nil?", args: %w(expr)},
       {name: :print, symbol: "print", args: %w(expr)},
       {name: :type_of, symbol: "type-of", args: %w(expr)},
@@ -68,6 +69,11 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       a.value < b.value ? TRUE : FALSE
+    end
+
+    def self.list_builtin(env)
+      exprs = env.lookup(var(:exprs))
+      exprs
     end
 
     def self.nil?(env)

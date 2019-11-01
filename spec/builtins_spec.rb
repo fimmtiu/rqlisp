@@ -105,4 +105,11 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run("(empty? 2)")).to eq Rqlisp::FALSE
     end
   end
+
+  describe ".list" do
+    it "returns a list of its arguments" do
+      expect(Rqlisp::Runtime.new.run("(list)")).to eq Rqlisp::List::EMPTY
+      expect(Rqlisp::Runtime.new.run("(list 1 2 3)")).to eq list(int(1), int(2), int(3))
+    end
+  end
 end

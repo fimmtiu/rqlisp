@@ -6,9 +6,10 @@ module Rqlisp
       @env = env
 
       @args = args
-      # FIXME: This arg counting is very inexact, and should be tightened up later.
+      # FIXME: This arg counting is very sloppy, and should be tightened up later.
       @rest_var = args.to_array.last if args.to_array.include?(var("&rest"))
       @arity = args.to_array.slice_before(var("&rest")).first&.count || 0
+      @arity = 0 if args.car == var("&rest")
 
       if code.is_a?(Method)
         @code = code

@@ -7,6 +7,7 @@ module Rqlisp
       {name: :append, symbol: "append", args: %w(&rest lists)},
       {name: :car, symbol: "car", args: %w(lst)},
       {name: :cdr, symbol: "cdr", args: %w(lst)},
+      {name: :debug, symbol: "debug", args: %w()},
       {name: :empty?, symbol: "empty?", args: %w(expr)},
       {name: :equal?, symbol: "=", args: %w(a b)},
       {name: :greater_than?, symbol: ">", args: %w(a b)},
@@ -65,6 +66,11 @@ module Rqlisp
       a = env.lookup(var(:a))
       b = env.lookup(var(:b))
       a.value == b.value ? TRUE : FALSE
+    end
+
+    def self.debug(env)
+      binding.pry
+      NIL
     end
 
     def self.greater_than?(env)

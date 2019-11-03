@@ -3,9 +3,8 @@ module Rqlisp
     include DataHelpers
 
     DERIVED_EXPRESSIONS = <<~CODE
-      ;; FIXME: Can't write this properly without quasiquote.
-      ;; (defmacro def (name args &rest code)
-      ;;   (set name (fn args code)))
+      (defmacro defn (name args &rest code)
+        (set name (append (list 'fn args) code)))
     CODE
 
     attr_reader :code, :parser

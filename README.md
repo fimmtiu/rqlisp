@@ -27,16 +27,15 @@ With code on the command line:
 $ ruby -Ilib exe/rqlisp -c '(print "hello, world!")'
 ```
 
+To drop into a pry debugger, use `(debug)` in your code.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-
 ## Todo
 
 * Quasiquotation
-* Add `list` builtin
 * Go back and fix up the `=`, `<`, etc. builtins to use rest args
 * `def`
 * Move specs out of Runtime into the individual data types' specs

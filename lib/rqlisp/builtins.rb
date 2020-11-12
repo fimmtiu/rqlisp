@@ -3,23 +3,26 @@ module Rqlisp
     extend DataHelpers
 
     BUILT_IN_FUNCTIONS = [
-      {name: :addition, symbol: "+", args: %w(a b)},
-      {name: :append, symbol: "append", args: %w(&rest lists)},
-      {name: :car, symbol: "car", args: %w(lst)},
-      {name: :cdr, symbol: "cdr", args: %w(lst)},
-      {name: :debug, symbol: "debug", args: %w()},
-      {name: :empty?, symbol: "empty?", args: %w(expr)},
-      {name: :equal?, symbol: "=", args: %w(a b)},
-      {name: :greater_than?, symbol: ">", args: %w(a b)},
-      {name: :less_than?, symbol: "<", args: %w(a b)},
-      {name: :list_builtin, symbol: "list", args: %w(&rest exprs)},
-      {name: :nil?, symbol: "nil?", args: %w(expr)},
-      {name: :print, symbol: "print", args: %w(expr)},
-      {name: :type_of, symbol: "type-of", args: %w(expr)},
+      { name: :addition, symbol: "+", args: %w(a b) },
+      { name: :append, symbol: "append", args: %w(&rest lists) },
+      { name: :car, symbol: "car", args: %w(lst) },
+      { name: :cdr, symbol: "cdr", args: %w(lst) },
+      { name: :debug, symbol: "debug", args: %w() },
+      { name: :empty?, symbol: "empty?", args: %w(expr) },
+      { name: :equal?, symbol: "=", args: %w(a b) },
+      { name: :greater_than?, symbol: ">", args: %w(a b) },
+      { name: :less_than?, symbol: "<", args: %w(a b) },
+      { name: :list_builtin, symbol: "list", args: %w(&rest exprs) },
+      { name: :nil?, symbol: "nil?", args: %w(expr) },
+      { name: :print, symbol: "print", args: %w(expr) },
+      { name: :type_of, symbol: "type-of", args: %w(expr) },
     ]
 
     BUILT_IN_MACROS = [
-      {name: :set, symbol: "set", args: %w(variable value)},
+      { name: :set, symbol: "set", args: %w(variable value) },
+      { name: :quasiquote, symbol: "quasiquote", args: %w(&rest exprs) },
+      { name: :unquote, symbol: "unquote", args: %w(expr) },
+      { name: :unquote_splicing, symbol: "unquote-splicing", args: %w(&rest exprs) },
     ]
 
     def self.add_to_environment(env)

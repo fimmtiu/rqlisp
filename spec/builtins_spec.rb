@@ -36,32 +36,32 @@ RSpec.describe Rqlisp::Builtins do
 
   describe ".equal?" do
     it "returns true when a and b are the same" do
-      expect(Rqlisp::Runtime.new.run('(= 2 2)')).to eq Rqlisp::TRUE
+      expect(Rqlisp::Runtime.new.run("(= 2 2)")).to eq Rqlisp::TRUE
       expect(Rqlisp::Runtime.new.run('(= "foo" "foo")')).to eq Rqlisp::TRUE
     end
 
     it "returns false when a and b are different" do
-      expect(Rqlisp::Runtime.new.run('(= 1 2)')).to eq Rqlisp::FALSE
+      expect(Rqlisp::Runtime.new.run("(= 1 2)")).to eq Rqlisp::FALSE
       expect(Rqlisp::Runtime.new.run('(= "foo" "bar")')).to eq Rqlisp::FALSE
     end
   end
 
   describe ".set" do
     it "establishes a new variable in the current env if it doesn't exist" do
-      expect(Rqlisp::Runtime.new.run('(set a 1) a')).to eq int(1)
+      expect(Rqlisp::Runtime.new.run("(set a 1) a")).to eq int(1)
     end
 
     it "changes the value of an existing variable in the current env" do
-      expect(Rqlisp::Runtime.new.run('((fn (a) (set a 2) a) 1)')).to eq int(2)
+      expect(Rqlisp::Runtime.new.run("((fn (a) (set a 2) a) 1)")).to eq int(2)
     end
   end
 
   describe ".type_of" do
     it "returns type names for objects" do
-      expect(Rqlisp::Runtime.new.run('(type-of 1)')).to eq str("integer")
+      expect(Rqlisp::Runtime.new.run("(type-of 1)")).to eq str("integer")
       expect(Rqlisp::Runtime.new.run('(type-of "woo")')).to eq str("string")
-      expect(Rqlisp::Runtime.new.run('(type-of (fn () 1))')).to eq str("function")
-      expect(Rqlisp::Runtime.new.run('(type-of nil)')).to eq str("nil")
+      expect(Rqlisp::Runtime.new.run("(type-of (fn () 1))")).to eq str("function")
+      expect(Rqlisp::Runtime.new.run("(type-of nil)")).to eq str("nil")
     end
   end
 

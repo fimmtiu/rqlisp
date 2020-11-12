@@ -40,6 +40,13 @@ module Rqlisp
       to_array[index]
     end
 
+    def []=(index, new_value)
+      raise "index #{index} out of range [0..#{length})" if index > length - 1 || index < 0
+      list = self
+      index.times { list = list.cdr }
+      list.car = new_value
+    end
+
     def length
       to_array.length
     end
@@ -47,6 +54,10 @@ module Rqlisp
     # We don't want to override to_a because we get fun problems with Ruby doing implicit conversions on it.
     def to_array
       [car].concat(cdr.to_array)
+    end
+
+    def each(&block)
+      to_array.each(&block)
     end
 
     def ==(other)

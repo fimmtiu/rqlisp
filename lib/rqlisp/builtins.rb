@@ -69,7 +69,7 @@ module Rqlisp
     end
 
     def self.debug(env)
-      binding.pry
+      binding.pry # rubocop:disable Lint/Debugger
       NIL
     end
 

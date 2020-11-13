@@ -8,7 +8,7 @@ This is a little Lisp interpreter which I threw together over the course of abou
     nil
     (do
       (print n)
-      (print-number-range (+ n 1) max)))))
+      (print-number-range (+ n 1) max))))
 
 ;; Prints the integers between 3 and 10, inclusive
 (print-number-range 3 10)

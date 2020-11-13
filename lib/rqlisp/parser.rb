@@ -8,8 +8,8 @@ module Rqlisp
       rule(:space?)      { space.maybe }
       rule(:eol)         { match('[\r\n]').repeat(1) >> space? }
 
-      rule(:comment)     { str(';') >> (eol.absent? >> any).repeat.as(:comment) >> space? }
-      rule(:integer)     { (str('-').maybe >> match('[0-9]').repeat(1)).as(:integer) >> space? }
+      rule(:comment)     { str(";") >> (eol.absent? >> any).repeat.as(:comment) >> space? }
+      rule(:integer)     { (str("-").maybe >> match("[0-9]").repeat(1)).as(:integer) >> space? }
       rule(:string) {
         str('"') >> (
           (str('\\') >> any) |
@@ -17,8 +17,8 @@ module Rqlisp
         ).repeat(0).as(:string) >>
         str('"') >> space?
       }
-      rule(:list)        { str('(') >> space? >> expressions.as(:list) >> str(')') >> space? }
-      rule(:variable)    { match('[a-zA-Z0-9?&<>=*+-]').repeat(1).as(:variable) >> space? }
+      rule(:list)        { str("(") >> space? >> expressions.as(:list) >> str(')') >> space? }
+      rule(:variable)    { match("[a-zA-Z0-9?&<>=*+-]").repeat(1).as(:variable) >> space? }
       rule(:quote)       { str("'") >> expression.as(:quote) >> space? }
       rule(:quasiquote)  { str("`") >> expression.as(:quasiquote) >> space? }
       rule(:unquote_sp)  { str(",@") >> expression.as(:unquote_sp) >> space? }
@@ -53,10 +53,13 @@ module Rqlisp
           # FIXME: This is a quick hack to fix the escaped double quote parsing. Should fix the rule instead.
           Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
         end
-      when :quote, :quasiquote, :unquote, :unquote_sp
+      when :quote, :quasiquote, :unquote
         Rqlisp::List.from_array(Rqlisp::Variable.new(type), convert_expr_to_rqlisp_data(value))
+      when :unquote_sp
+        expr = convert_expr_to_rqlisp_data(value)
+        Rqlisp::List.from_array(Rqlisp::Variable.new(:"unquote-splicing"), expr)
       else
-        binding.pry
+        binding.pry # rubocop:disable Lint/Debugger
         raise "wtf"
       end
     end

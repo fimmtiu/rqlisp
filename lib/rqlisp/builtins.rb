@@ -3,23 +3,26 @@ module Rqlisp
     extend DataHelpers
 
     BUILT_IN_FUNCTIONS = [
-      {name: :addition, symbol: "+", args: %w(a b)},
-      {name: :append, symbol: "append", args: %w(&rest lists)},
-      {name: :car, symbol: "car", args: %w(lst)},
-      {name: :cdr, symbol: "cdr", args: %w(lst)},
-      {name: :debug, symbol: "debug", args: %w()},
-      {name: :empty?, symbol: "empty?", args: %w(expr)},
-      {name: :equal?, symbol: "=", args: %w(a b)},
-      {name: :greater_than?, symbol: ">", args: %w(a b)},
-      {name: :less_than?, symbol: "<", args: %w(a b)},
-      {name: :list_builtin, symbol: "list", args: %w(&rest exprs)},
-      {name: :nil?, symbol: "nil?", args: %w(expr)},
-      {name: :print, symbol: "print", args: %w(expr)},
-      {name: :type_of, symbol: "type-of", args: %w(expr)},
+      { name: :addition, symbol: "+", args: %w(a b) },
+      { name: :append, symbol: "append", args: %w(&rest lists) },
+      { name: :car, symbol: "car", args: %w(lst) },
+      { name: :cdr, symbol: "cdr", args: %w(lst) },
+      { name: :debug, symbol: "debug", args: %w() },
+      { name: :empty?, symbol: "empty?", args: %w(expr) },
+      { name: :equal?, symbol: "=", args: %w(a b) },
+      { name: :greater_than?, symbol: ">", args: %w(a b) },
+      { name: :less_than?, symbol: "<", args: %w(a b) },
+      { name: :list_builtin, symbol: "list", args: %w(&rest exprs) },
+      { name: :nil?, symbol: "nil?", args: %w(expr) },
+      { name: :print, symbol: "print", args: %w(expr) },
+      { name: :type_of, symbol: "type-of", args: %w(expr) },
+      { name: :unquote, symbol: "unquote", args: %w(expr) },
+      { name: :unquote_splicing, symbol: "unquote-splicing", args: %w(expr) },
     ]
 
     BUILT_IN_MACROS = [
-      {name: :set, symbol: "set", args: %w(variable value)},
+      { name: :set, symbol: "set", args: %w(variable value) },
+      { name: :quasiquote, symbol: "quasiquote", args: %w(expr) },
     ]
 
     def self.add_to_environment(env)
@@ -107,6 +110,45 @@ module Rqlisp
       value = value_expr.eval(env)
       env.parent_env.set(variable, value)
       value
+    end
+
+    def self.quasiquote(env)
+      expr = env.lookup(var(:expr))
+      expanded = _recursive_quasiquoter(expr, env.parent_env)
+      list(var("quote"), expanded)
+    end
+
+    def self._recursive_quasiquoter(expr, env)
+      return expr if !expr.is_a?(List) || expr == List::EMPTY
+
+      new_list = []
+      until expr == List::EMPTY
+        if expr.car.is_a?(List)
+          case expr.car.car
+          when var("quasiquote")
+            new_list << expr.car.eval(env)
+          when var("unquote")
+            new_list << expr.car.cdr.car.eval(env)
+          when var("unquote-splicing")
+            new_list.concat(expr.car.cdr.car.eval(env).to_array) if expr.car.cdr.car != List::EMPTY
+          else
+            new_list << _recursive_quasiquoter(expr.car, env)
+          end
+        else
+          new_list << _recursive_quasiquoter(expr.car, env)
+        end
+        expr = expr.cdr
+      end
+
+      Rqlisp::List.from_array(*new_list)
+    end
+
+    def self.unquote(_env)
+      raise "unquote is only valid inside a quasiquote expression"
+    end
+
+    def self.unquote_splicing(_env)
+      raise "unquote-splicing is only valid inside a quasiquote expression"
     end
 
     def self.type_of(env)

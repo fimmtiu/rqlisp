@@ -5,9 +5,9 @@ RSpec.describe Rqlisp::Parser do
 
   TEST_CASES = {
     "integer" => [
-      ['10', int(10)],
-      ['-10', int(-10)],
-      ['0000', int(0)],
+      ["10", int(10)],
+      ["-10", int(-10)],
+      ["0000", int(0)],
     ],
     "string" => [
       ['""', str("")],
@@ -16,15 +16,15 @@ RSpec.describe Rqlisp::Parser do
       ['"w\\"oo"', str("w\"oo")],
     ],
     "list" => [
-      ['()', list()],
-      ['(1 2)', list(int(1), int(2))],
+      ["()", list()],
+      ["(1 2)", list(int(1), int(2))],
       ["(1\n2)", list(int(1), int(2))],
       ['("one" "two" "three")', list(str("one"), str("two"), str("three"))],
     ],
     "comment" => [
       ['"woo" ; "hoo"', str("woo")],
       ['"woo" ;; "hoo"', str("woo")],
-      [';(1 2)', nil],
+      [";(1 2)", nil],
       ["; i like pie\n(1 2)", list(int(1), int(2))],
     ],
     "multiple things" => [
@@ -32,11 +32,11 @@ RSpec.describe Rqlisp::Parser do
       ["1 2 3", [int(1), int(2), int(3)]],
     ],
     "variable" => [
-      ['honk', var("honk")],
-      ['honk', var(:honk)],
-      ['pie-hole', var("pie-hole")],
-      ['pie hole', [var("pie"), var("hole")]],
-      ['(pie hole)', list(var("pie"), var("hole"))],
+      ["honk", var("honk")],
+      ["honk", var(:honk)],
+      ["pie-hole", var("pie-hole")],
+      ["pie hole", [var("pie"), var("hole")]],
+      ["(pie hole)", list(var("pie"), var("hole"))],
     ],
     "quote" => [
       ["'()", list(var(:quote), list())],
@@ -48,7 +48,9 @@ RSpec.describe Rqlisp::Parser do
       ["`()", list(var(:quasiquote), list())],
       ["`1", list(var(:quasiquote), int(1))],
       ["`(1)", list(var(:quasiquote), list(int(1)))],
-      ["`(1 ,2)", list(var(:quasiquote), list(int(1), list(var(:unquote), int(2))))],
+      ["`(1 ,2 3)", list(var(:quasiquote), list(int(1), list(var(:unquote), int(2)), int(3)))],
+      ["`(1 ,@foo)", list(var(:quasiquote), list(int(1), list(var(:"unquote-splicing"), var(:foo))))],
+      ["`(1 ,@(2 3))", list(var(:quasiquote), list(int(1), list(var(:"unquote-splicing"), list(int(2), int(3)))))],
     ],
   }
 

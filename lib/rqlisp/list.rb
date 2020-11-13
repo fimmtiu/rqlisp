@@ -11,6 +11,10 @@ module Rqlisp
       def to_array
         []
       end
+
+      def each
+        [].each
+      end
     end
 
     EMPTY = EmptyList.new
@@ -20,7 +24,7 @@ module Rqlisp
 
     def self.from_array(*items)
       new_list = EMPTY
-      while !items.empty?
+      until items.empty?
         new_list = new(items.pop, new_list)
       end
       new_list
@@ -32,12 +36,19 @@ module Rqlisp
     end
 
     def cdr=(new_cdr)
-      raise "Dotted lists are a pain in the ass!" if !new_cdr.is_a?(List)
+      raise "The cdr of a list must be nil or another list" if !new_cdr.is_a?(List)
       @cdr = new_cdr
     end
 
     def [](index)
       to_array[index]
+    end
+
+    def []=(index, new_value)
+      raise "index #{index} out of range [0..#{length})" if index > length - 1 || index < 0
+      list = self
+      index.times { list = list.cdr }
+      list.car = new_value
     end
 
     def length
@@ -47,6 +58,10 @@ module Rqlisp
     # We don't want to override to_a because we get fun problems with Ruby doing implicit conversions on it.
     def to_array
       [car].concat(cdr.to_array)
+    end
+
+    def each(&block)
+      to_array.each(&block)
     end
 
     def ==(other)
@@ -65,7 +80,7 @@ module Rqlisp
         Rqlisp::Function.new(env: env, args: self[1], code: cdr.cdr)
       when var("defmacro")
         raise "'defmacro' requires a name and argument list!" if !self[2].is_a?(List)
-        macro = Rqlisp::Macro.new(env: env, args: self[2], code: cdr.cdr.cdr)
+        macro = Rqlisp::Macro.new(env: nil, args: self[2], code: cdr.cdr.cdr)
         env.set(self[1], macro)
       when var("quote")
         raise "'quote' takes only one argument!" if cdr.length != 1
@@ -82,7 +97,7 @@ module Rqlisp
         end
       when var("do")
         last_value = List::EMPTY
-        cdr.to_array.each do |inner_expr|
+        cdr.each do |inner_expr|
           last_value = inner_expr.eval(env)
         end
         last_value

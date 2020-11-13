@@ -3,13 +3,12 @@
 This is a little Lisp interpreter which I threw together over the course of about 1.5 working days. I didn't get as far as I'd like, but it's still not bad. The only data types at this point are strings, integers, functions, and macros. (No quasiquotation yet, though.)
 
 ```lisp
-(set print-number-range
-  (fn (n max)
-    (if (> n max)
-      nil
-      (do
-        (print n)
-        (print-number-range (+ n 1) max)))))
+(defn print-number-range (n max)
+  (if (> n max)
+    nil
+    (do
+      (print n)
+      (print-number-range (+ n 1) max)))))
 
 ;; Prints the integers between 3 and 10, inclusive
 (print-number-range 3 10)
@@ -35,9 +34,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Todo
 
-* Quasiquotation
 * Go back and fix up the `=`, `<`, etc. builtins to use rest args
-* `def`
 * Move specs out of Runtime into the individual data types' specs
 * Rip most of the crap out of DataType
 * Way more error checking

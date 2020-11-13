@@ -79,6 +79,7 @@ module Rqlisp
         raise "'fn' requires an argument list!" if !self[1].is_a?(List)
         Rqlisp::Function.new(env: env, args: self[1], code: cdr.cdr)
       when var("defmacro")
+        # FIXME: Move this to builtins.
         raise "'defmacro' requires a name and argument list!" if !self[2].is_a?(List)
         macro = Rqlisp::Macro.new(env: env, args: self[2], code: cdr.cdr.cdr)
         env.set(self[1], macro)

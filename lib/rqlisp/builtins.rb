@@ -114,8 +114,7 @@ module Rqlisp
 
     def self.quasiquote(env)
       exprs = env.lookup(var(:exprs))
-      expanded = _recursive_quasiquoter(exprs, env.parent_env)
-      list(var("quote"), expanded)
+      _recursive_quasiquoter(exprs, env.parent_env)
     end
 
     def self._recursive_quasiquoter(expr, env)

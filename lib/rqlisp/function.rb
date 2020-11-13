@@ -26,7 +26,7 @@ module Rqlisp
       body = if code.is_a?(Method)
                code
              else
-               code.cdr.to_s[1..-2]   # ignore the "do" block
+               code.cdr.to_s[1..-2] # ignore the "do" block
              end
       "(fn #{args} #{body})"
     end

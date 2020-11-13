@@ -120,4 +120,61 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run("(append '(1 2) '(3))")).to eq list(int(1), int(2), int(3))
     end
   end
+
+  describe ".quasiquote" do
+    it "returns the same list if there are no unquotes" do
+      expect(Rqlisp::Runtime.new.run("(quasiquote)")).to eq Rqlisp::List::EMPTY
+      expect(Rqlisp::Runtime.new.run("(quasiquote 1 2)")).to eq list(int(1), int(2))
+      expect(Rqlisp::Runtime.new.run("(quasiquote 1 (2 3) 4)")).to eq list(int(1), list(int(2), int(3)), int(4))
+    end
+
+    it "unquotes specified expressions" do
+      expect(Rqlisp::Runtime.new.run("(quasiquote 1 ,(+ 1 1) 3)")).to eq list(int(1), int(2), int(3))
+      expect(Rqlisp::Runtime.new.run("(quasiquote ,(+ 1 1) 3)")).to eq list(int(2), int(3))
+    end
+
+    # FIXME: Let's come back and fix this once we have the basic functionality working.
+    # it "correctly handles recursive quasiquotes" do
+    #   q_and_qq = Rqlisp::Runtime.new.run("'`(1 ,2)")
+    #   qq_and_qq = Rqlisp::Runtime.new.run("``(1 ,2)")
+    #   puts " q: #{q_and_qq}"
+    #   puts "qq: #{qq_and_qq}"
+    #   expect(q_and_qq).to eq qq_and_qq
+    # end
+
+    context "unquoted-splicing" do
+      it "in the middle of expressions" do
+        expect(Rqlisp::Runtime.new.run("(quasiquote 1 ,@(list 2 3) 4)")).to eq list(int(1), int(2), int(3), int(4))
+      end
+
+      it "at the start of expressions" do
+        expect(Rqlisp::Runtime.new.run("(quasiquote ,@(list 1 2) 3)")).to eq list(int(1), int(2), int(3))
+      end
+
+      it "evaluates variables which are being unquote-spliced" do
+        env = { foo: list(int(2), int(3)) }
+        expect(Rqlisp::Runtime.new.run("(quasiquote 1 ,@foo 4)", bindings: env)).to eq list(int(1), int(2), int(3), int(4))
+      end
+
+      it "splices empty lists in the middle of expressions" do
+        expect(Rqlisp::Runtime.new.run("(quasiquote 1 ,@() 2)")).to eq list(int(1), int(2))
+      end
+
+      it "splices empty lists at the beginning of expressions" do
+        expect(Rqlisp::Runtime.new.run("(quasiquote ,@() 1 2)")).to eq list(int(1), int(2))
+      end
+    end
+  end
+
+  describe ".unquote" do
+    it "raises an error outside of a quasiquotation" do
+      expect { Rqlisp::Runtime.new.run("(unquote 1)") }.to raise_error(/only valid inside a quasi/)
+    end
+  end
+
+  describe ".unquote-splicing" do
+    it "raises an error outside of a quasiquotation" do
+      expect { Rqlisp::Runtime.new.run("(unquote-splicing '(1 2 3))") }.to raise_error(/only valid inside a quasi/)
+    end
+  end
 end

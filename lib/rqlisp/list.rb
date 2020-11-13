@@ -11,6 +11,10 @@ module Rqlisp
       def to_array
         []
       end
+
+      def each
+        [].each
+      end
     end
 
     EMPTY = EmptyList.new
@@ -20,7 +24,7 @@ module Rqlisp
 
     def self.from_array(*items)
       new_list = EMPTY
-      while !items.empty?
+      until items.empty?
         new_list = new(items.pop, new_list)
       end
       new_list
@@ -32,7 +36,7 @@ module Rqlisp
     end
 
     def cdr=(new_cdr)
-      raise "Dotted lists are a pain in the ass!" if !new_cdr.is_a?(List)
+      raise "The cdr of a list must be nil or another list" if !new_cdr.is_a?(List)
       @cdr = new_cdr
     end
 
@@ -93,7 +97,7 @@ module Rqlisp
         end
       when var("do")
         last_value = List::EMPTY
-        cdr.to_array.each do |inner_expr|
+        cdr.each do |inner_expr|
           last_value = inner_expr.eval(env)
         end
         last_value

@@ -4,7 +4,7 @@ RSpec.describe Rqlisp::List do
   it "doesn't allow dotted lists" do
     expect do
       described_class.new(int(1), int(2))
-    end.to raise_error(/Dotted lists/)
+    end.to raise_error(/must be nil or another list/)
   end
 
   describe "#to_array" do

@@ -53,10 +53,13 @@ module Rqlisp
           # FIXME: This is a quick hack to fix the escaped double quote parsing. Should fix the rule instead.
           Rqlisp::String.new(value.to_str.gsub(/\\"/, '"'))
         end
-      when :quote, :quasiquote, :unquote, :unquote_sp
+      when :quote, :quasiquote, :unquote
         Rqlisp::List.from_array(Rqlisp::Variable.new(type), convert_expr_to_rqlisp_data(value))
+      when :unquote_sp
+        expr = convert_expr_to_rqlisp_data(value)
+        Rqlisp::List.from_array(Rqlisp::Variable.new(:"unquote-splicing"), expr)
       else
-        binding.pry
+        binding.pry # rubocop:disable Lint/Debugger
         raise "wtf"
       end
     end

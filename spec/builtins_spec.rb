@@ -137,9 +137,12 @@ RSpec.describe Rqlisp::Builtins do
     # it "correctly handles recursive quasiquotes" do
     #   q_and_qq = Rqlisp::Runtime.new.run("'`(1 ,2)")
     #   qq_and_qq = Rqlisp::Runtime.new.run("``(1 ,2)")
-    #   puts " q: #{q_and_qq}"
-    #   puts "qq: #{qq_and_qq}"
-    #   expect(q_and_qq).to eq qq_and_qq
+    #   qq = Rqlisp::Runtime.new.run("`(1 ,2)")
+    #   puts "       qq: #{q_and_qq}"
+    #   puts " q_and_qq: #{q_and_qq}"
+    #   puts "qq_and_qq: #{qq_and_qq}"
+    #   expect(q_and_qq).to eq qq
+    #   expect(qq_and_qq).to eq qq
     # end
 
     context "unquoted-splicing" do

@@ -50,7 +50,7 @@ RSpec.describe Rqlisp::Parser do
       ["`(1)", list(var(:quasiquote), list(int(1)))],
       ["`(1 ,2 3)", list(var(:quasiquote), list(int(1), list(var(:unquote), int(2)), int(3)))],
       ["`(1 ,@foo)", list(var(:quasiquote), list(int(1), list(var(:"unquote-splicing"), var(:foo))))],
-      ["`(1 ,@(2 3))", list(var(:quasiquote), list(int(1), list(var(:"unquote-splicing"), int(2), int(3))))],
+      ["`(1 ,@(2 3))", list(var(:quasiquote), list(int(1), list(var(:"unquote-splicing"), list(int(2), int(3)))))],
     ],
   }
 

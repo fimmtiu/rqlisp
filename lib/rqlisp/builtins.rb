@@ -137,7 +137,6 @@ module Rqlisp
         else
           new_list << _recursive_quasiquoter(expr.car, env)
         end
-        puts "new_list: [#{new_list.map(&:to_s).join(" ")}]"
         expr = expr.cdr
       end
 

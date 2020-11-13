@@ -22,7 +22,7 @@ module Rqlisp
 
     BUILT_IN_MACROS = [
       { name: :set, symbol: "set", args: %w(variable value) },
-      { name: :quasiquote, symbol: "quasiquote", args: %w(&rest exprs) },
+      { name: :quasiquote, symbol: "quasiquote", args: %w(expr) },
     ]
 
     def self.add_to_environment(env)
@@ -113,8 +113,9 @@ module Rqlisp
     end
 
     def self.quasiquote(env)
-      exprs = env.lookup(var(:exprs))
-      _recursive_quasiquoter(exprs, env.parent_env)
+      expr = env.lookup(var(:expr))
+      expanded = _recursive_quasiquoter(expr, env.parent_env)
+      list(var("quote"), expanded)
     end
 
     def self._recursive_quasiquoter(expr, env)

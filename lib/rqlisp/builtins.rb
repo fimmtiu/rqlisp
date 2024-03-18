@@ -115,6 +115,7 @@ module Rqlisp
     def self.quasiquote(env)
       expr = env.lookup(var(:expr))
       expanded = _recursive_quasiquoter(expr, env.parent_env)
+      puts "[QQ] expr #{expr}, expanded #{expanded}" if $foo
       list(var("quote"), expanded)
     end
 
@@ -123,19 +124,27 @@ module Rqlisp
 
       new_list = []
       until expr == List::EMPTY
-        if expr.car.is_a?(List)
+        case expr.car
+        when List
           case expr.car.car
-          when var("quasiquote")
-            new_list << expr.car.eval(env)
           when var("unquote")
             new_list << expr.car.cdr.car.eval(env)
+            puts "[r_qq] expr #{expr}, new_list #{new_list.map(&:to_s).inspect} (unquote)"
           when var("unquote-splicing")
             new_list.concat(expr.car.cdr.car.eval(env).to_array) if expr.car.cdr.car != List::EMPTY
+            puts "[r_qq] expr #{expr}, new_list #{new_list.map(&:to_s).inspect} (unquote-splicing)"
           else
             new_list << _recursive_quasiquoter(expr.car, env)
+            puts "[r_qq] expr #{expr}, new_list #{new_list.map(&:to_s).inspect} (list)"
+          end
+        when Variable
+          if expr.car.value == :quasiquote
+            new_list.concat(expr.to_array)
+            break
           end
         else
           new_list << _recursive_quasiquoter(expr.car, env)
+          puts "[r_qq] expr #{expr}, new_list #{new_list.map(&:to_s).inspect} (non-list)"
         end
         expr = expr.cdr
       end

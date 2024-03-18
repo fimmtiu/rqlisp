@@ -133,17 +133,16 @@ RSpec.describe Rqlisp::Builtins do
       expect(Rqlisp::Runtime.new.run("`(,(+ 1 1) 3)")).to eq list(int(2), int(3))
     end
 
-    # FIXME: Let's come back and fix this once we have the basic functionality working.
-    # it "correctly handles recursive quasiquotes" do
-    #   q_and_qq = Rqlisp::Runtime.new.run("'`(1 ,2)")
-    #   qq_and_qq = Rqlisp::Runtime.new.run("``(1 ,2)")
-    #   qq = Rqlisp::Runtime.new.run("`(1 ,2)")
-    #   puts "       qq: #{q_and_qq}"
-    #   puts " q_and_qq: #{q_and_qq}"
-    #   puts "qq_and_qq: #{qq_and_qq}"
-    #   expect(q_and_qq).to eq qq
-    #   expect(qq_and_qq).to eq qq
-    # end
+    it "treats recursive quasiquotes consistently" do
+      q_and_qq = Rqlisp::Runtime.new.run("'`(1 ,2)")
+      $foo = 1
+      qq_and_qq = Rqlisp::Runtime.new.run("``(1 ,2)")
+      puts "       qq: #{qq}"
+      puts " q_and_qq: #{q_and_qq}"
+      puts "qq_and_qq: #{qq_and_qq}"
+      expect(q_and_qq).to eq qq
+      expect(qq_and_qq).to eq qq
+    end
 
     context "unquoted-splicing" do
       it "in the middle of expressions" do
